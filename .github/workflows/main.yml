@@ -45,7 +45,7 @@ jobs:
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          family: my-python-app
+          family: hello-world-python
           container-name: hello-world-python
           image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-python-app:latest
           service: hello-world-python
