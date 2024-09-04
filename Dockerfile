@@ -1,18 +1,21 @@
-# Use the official Python image
-FROM python:3.11-slim
-#
+# Dockerfile
+# Use the official Python base image
+FROM python:3.9-slim
+
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file and install dependencies
+# Copy the requirements file into the container
 COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
 
-# Copy the rest of the application code
+# Install the Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code into the container
 COPY app.py app.py
 
-# Expose the port the app runs on
-EXPOSE 8080
+# Expose port 5000 for the Flask application
+EXPOSE 5000
 
-# Run the application
+# Define the command to run the application
 CMD ["python", "app.py"]
