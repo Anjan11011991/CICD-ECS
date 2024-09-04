@@ -29,8 +29,7 @@ jobs:
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
         with:
-          # No `region` input here
-          # Region will be managed via environment variables in other steps
+          region: ${{ secrets.AWS_REGION }}  # Ensure region is passed here
 
       - name: Tag and Push Docker image to Amazon ECR
         run: |
@@ -47,6 +46,6 @@ jobs:
           cluster: hello-world-python
           wait-for-service-stability: true
         env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}  # Make sure the AWS region is set here
+          AWS_REGION: ${{ secrets.AWS_REGION }}  # Ensure region is set here
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
