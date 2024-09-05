@@ -42,12 +42,28 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Register ECS Task Definition
+        run: |
+          aws ecs register-task-definition \
+            --family test \
+            --container-definitions '[
+              {
+                "name": "test",
+                "image": "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest",
+                "essential": true,
+                "memory": 512,
+                "cpu": 256
+              }
+            ]'
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          family: test  # The ECS task definition family name
-          container-name: test  # Name of the container in the task definition
-          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
+          task-definition: test
           service: test  # Name of the ECS service to update
           cluster: test  # Name of the ECS cluster
           wait-for-service-stability: true
