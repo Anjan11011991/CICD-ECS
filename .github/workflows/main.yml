@@ -45,9 +45,11 @@ jobs:
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          task-definition: task-definition.json  # Path to your ECS task definition file
-          service: test
-          cluster: test
+          family: test  # The ECS task definition family name
+          container-name: test  # Name of the container in the task definition
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
+          service: test  # Name of the ECS service to update
+          cluster: test  # Name of the ECS cluster
           wait-for-service-stability: true
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}  # Ensure AWS region is set here
