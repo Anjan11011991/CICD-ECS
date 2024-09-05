@@ -23,9 +23,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Load environment variables
-        uses: dawidd6/action-load-env@v2
-        with:
-          path: .env
+        run: |
+          set -a
+          source .env
+          set +a
+        shell: bash
 
       - name: Build Docker image
         run: |
