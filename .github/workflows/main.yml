@@ -22,41 +22,34 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Load environment variables
-        run: |
-          set -a
-          source .env
-          set +a
-        shell: bash
-
       - name: Build Docker image
         run: |
-          docker build -t ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} .
+          docker build -t hello-world-python .
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
         env:
-          AWS_REGION: ${{ env.AWS_REGION }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}  # Set AWS region in environment variables
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Tag and Push Docker image to Amazon ECR
         run: |
-          docker tag ${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }} ${{ env.ECR_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-          docker push ${{ env.ECR_URI }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          docker tag hello-world-python:latest 975049994612.dkr.ecr.ap-south-1.amazonaws.com/hello-world-python:latest
+          docker push 975049994612.dkr.ecr.ap-south-1.amazonaws.com/hello-world-python:latest
         env:
-          AWS_REGION: ${{ env.AWS_REGION }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}  # Ensure AWS region is set here
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Update ECS service
         run: |
           aws ecs update-service \
-            --cluster ${{ env.CLUSTER_NAME }} \
-            --service ${{ env.SERVICE_NAME }} \
+            --cluster test \
+            --service test \
             --force-new-deployment \
-            --region ${{ env.AWS_REGION }}
+            --region ${{ secrets.AWS_REGION }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ env.AWS_REGION }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
