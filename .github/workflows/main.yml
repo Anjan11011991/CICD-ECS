@@ -35,39 +35,21 @@ jobs:
 
       - name: Tag and Push Docker image to Amazon ECR
         run: |
-          docker tag hello-world-python:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
+          docker tag hello-world-python:latest 975049994612.dkr.ecr.ap-south-1.amazonaws.com/hello-world-python:latest
+          docker push 975049994612.dkr.ecr.ap-south-1.amazonaws.com/hello-world-python:latest
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}  # Ensure AWS region is set here
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Register ECS Task Definition
+      - name: Update ECS service
         run: |
-          aws ecs register-task-definition \
-            --family test \
-            --container-definitions '[
-              {
-                "name": "test",
-                "image": "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest",
-                "essential": true,
-                "memory": 512,
-                "cpu": 256
-              }
-            ]'
+          aws ecs update-service \
+            --cluster test \
+            --service test \
+            --force-new-deployment \
+            --region ${{ secrets.AWS_REGION }}
         env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Deploy to ECS
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: test
-          service: test  # Name of the ECS service to update
-          cluster: test  # Name of the ECS cluster
-          wait-for-service-stability: true
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}  # Ensure AWS region is set here
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
