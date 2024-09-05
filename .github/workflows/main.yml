@@ -45,11 +45,11 @@ jobs:
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
-          family: hello-world-python
-          container-name: hello-world-python
+          family: test
+          container-name: test
           image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-python-app:latest
-          service: hello-world-python
-          cluster: hello-world-python
+          service: test
+          cluster: test
           wait-for-service-stability: true
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}  # Ensure AWS region is set here
