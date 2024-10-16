@@ -32,6 +32,10 @@ jobs:
       run: |
         docker build -t hello-world-python .
 
+    - name: Clean up orphan processes
+      run: |
+        docker system prune -f || true  # Force cleanup of unused containers, networks, images, and cache
+
     - name: Update ECS cluster
       shell: pwsh
       run: |
