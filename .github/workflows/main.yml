@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Adjust this to the branch you want to trigger the workflow
+      - main  # Trigger the workflow on push to the main branch
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'  # Specify your Python version
+        python-version: '3.9'  # Specify the Python version to use
 
     - name: Install dependencies
       run: |
