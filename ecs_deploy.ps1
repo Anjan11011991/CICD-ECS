@@ -28,7 +28,7 @@ if (-not $loginCommand) {
 }
 
 # Tag Docker image
-$fullImageName = "$accountId.dkr.ecr.$region.amazonaws.com/$ecrRepository:$imageTag"
+$fullImageName = "$accountId.dkr.ecr.$region.amazonaws.com/$ecrRepository:${imageTag}"  # Use ${} for variable
 Write-Host "Tagging Docker image as $fullImageName"
 docker tag $imageTag $fullImageName || Exit-WithError "Docker tag failed."
 
