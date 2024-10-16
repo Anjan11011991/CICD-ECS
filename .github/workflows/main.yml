@@ -24,5 +24,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Update ECS cluster
+        shell: pwsh
+        run: |
+          .\ecs_deploy.ps1
+
       
      
