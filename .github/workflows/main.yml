@@ -14,7 +14,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        run: |
+          # Create a Buildx builder instance
+          docker buildx create --name mybuilder --use --driver docker
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
