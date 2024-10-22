@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, windows]
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -30,7 +30,7 @@ jobs:
 
       - name: Deploy to Amazon ECS
         run: |
-          aws ecs update-service --cluster test \
-          --service test \
+          aws ecs update-service --cluster Test \
+          --service Test \
           --force-new-deployment \
           --region ap-south-1
