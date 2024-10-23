@@ -21,13 +21,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Build Docker image
-        run: |
-          docker build -t hello-world-python .
+        run: docker build -t hello-world-python .
 
       - name: Tag and Push Docker image to Amazon ECR
         run: |
-         docker tag hello-world-python ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python
-         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python
+          ECR_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python"
+          docker tag hello-world-python $ECR_URI
+          docker push $ECR_URI
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}  
           AWS_REGION: ${{ secrets.AWS_REGION }}  
