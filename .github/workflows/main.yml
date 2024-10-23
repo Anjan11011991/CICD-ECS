@@ -24,8 +24,9 @@ jobs:
         run: docker build -t hello-world-python .
 
       - name: Tag and Push Docker image to Amazon ECR
+        shell: pwsh
         run: |
-          ECR_URI="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python"
+          $ECR_URI = "${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python"
           docker tag hello-world-python $ECR_URI
           docker push $ECR_URI
         env:
