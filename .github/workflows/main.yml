@@ -12,10 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-
+        
       - name: Build Docker image
         run: |
           docker build -t hello-world-python .
