@@ -1,9 +1,16 @@
 name: Build and Deploy Dockerized App
 
 on:
-  push:
-    branches:
-      - main  # Adjust to your target branch
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment (prod, stage)'
+        required: true
+        default: 'stage'
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'main'  
 
 jobs:
   deploy:
@@ -36,10 +43,18 @@ jobs:
 
       - name: Update ECS service
         run: |
-          aws ecs update-service `
-            --cluster Test `
-            --service Test `
-            --force-new-deployment `
+          if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
+            CLUSTER=${{ secrets.AWS_PROD_CLUSTER }}
+            SERVICE=${{ secrets.AWS_PROD_SERVICE }}
+          else
+            CLUSTER=${{ secrets.AWS_STAGE_CLUSTER }}
+            SERVICE=${{ secrets.AWS_STAGE_SERVICE }}
+          fi
+
+          aws ecs update-service \
+            --cluster $CLUSTER \
+            --service $SERVICE \
+            --force-new-deployment \
             --region ${{ secrets.AWS_REGION }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
