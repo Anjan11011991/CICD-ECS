@@ -44,7 +44,8 @@ jobs:
       - name: Update ECS service
         run: |
           # Determine the cluster and service based on the input environment
-          if (${{ github.event.inputs.environment }} -eq "prod") {
+          $environment = "${{ github.event.inputs.environment }}"
+          if ($environment -eq "prod") {
               $CLUSTER = "${{ secrets.AWS_PROD_CLUSTER }}"
               $SERVICE = "${{ secrets.AWS_PROD_SERVICE }}"
           } else {
