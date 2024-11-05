@@ -43,7 +43,9 @@ jobs:
 
       - name: Update ECS service
         run: |
-          if ($(${{ github.event.inputs.environment }}) -eq "prod") {
+          $environment = "${{ github.event.inputs.environment }}"
+          
+          if ($environment -eq "prod") {
             $CLUSTER = "${{ secrets.AWS_PROD_CLUSTER }}"
             $SERVICE = "${{ secrets.AWS_PROD_SERVICE }}"
           } else {
