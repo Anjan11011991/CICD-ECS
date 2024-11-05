@@ -53,6 +53,10 @@ jobs:
             $SERVICE = "${{ secrets.AWS_STAGE_SERVICE }}"
           }
 
+          # Debug output
+          Write-Host "Using Cluster: $CLUSTER"
+          Write-Host "Using Service: $SERVICE"
+
           aws ecs update-service `
             --cluster $CLUSTER `
             --service $SERVICE `
