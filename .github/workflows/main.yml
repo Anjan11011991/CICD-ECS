@@ -46,11 +46,11 @@ jobs:
           # Determine the cluster and service based on the input environment
           $environment = "${{ github.event.inputs.environment }}"
           if ($environment -eq "prod") {
-              $CLUSTER = "${{ secrets.AWS_PROD_CLUSTER }}"
-              $SERVICE = "${{ secrets.AWS_PROD_SERVICE }}"
+              $CLUSTER = "${{ secrets.AWS_CLUSTER_PROD }}"
+              $SERVICE = "${{ secrets.AWS_SERVICE_PROD }}"
           } else {
-              $CLUSTER = "${{ secrets.AWS_STAGE_CLUSTER }}"
-              $SERVICE = "${{ secrets.AWS_STAGE_SERVICE }}"
+              $CLUSTER = "${{ secrets.AWS_CLUSTER_STAGE }}"
+              $SERVICE = "${{ secrets.AWS_SERVICE_STAGE }}"
           }
 
           # Debugging output
