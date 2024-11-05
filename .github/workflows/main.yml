@@ -42,6 +42,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Update ECS service
+        shell: pwsh  # Specify PowerShell shell
         run: |
           if (${{ github.event.inputs.environment }} -eq "prod") {
               $CLUSTER = "${{ secrets.AWS_PROD_CLUSTER }}"
@@ -60,7 +61,6 @@ jobs:
               --service $SERVICE `
               --force-new-deployment ` 
               --region "${{ secrets.AWS_REGION }}"
-        shell: pwsh
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
