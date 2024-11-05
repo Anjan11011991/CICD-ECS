@@ -54,8 +54,19 @@ jobs:
           }
 
           # Debugging output
+          Write-Host "Environment: $environment"
           Write-Host "Using cluster: $CLUSTER"
           Write-Host "Using service: $SERVICE"
+
+          # Check if CLUSTER and SERVICE are set
+          if (-not $CLUSTER) {
+              Write-Host "Error: CLUSTER is not set. Please check your secrets."
+              exit 1
+          }
+          if (-not $SERVICE) {
+              Write-Host "Error: SERVICE is not set. Please check your secrets."
+              exit 1
+          }
 
           # Update the ECS service
           aws ecs update-service `
