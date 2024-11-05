@@ -1,30 +1,28 @@
 name: Build and Deploy Dockerized App
 
 on:
-  push:
-    branches:
-      - main  # Adjust to your target branch
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Select the environment to deploy to'
+        description: 'Deployment environment (prod, stage)'
         required: true
         default: 'stage'
-        type: choice
-        options:
-          - stage
-          - prod
+      branch:
+        description: 'Branch to deploy from'
+        required: true
+        default: 'main'  
 
 jobs:
   deploy:
     runs-on: [self-hosted, windows]
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         
       - name: Build Docker image
         run: |
-          docker build -t hello-world-python . 
+          docker build -t hello-world-python .
 
       - name: Log in to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
@@ -35,8 +33,8 @@ jobs:
 
       - name: Tag and Push Docker image to Amazon ECR
         run: |
-          docker tag hello-world-python:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:${{ github.event.inputs.environment }}
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:${{ github.event.inputs.environment }}
+         docker tag hello-world-python:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
+         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}  
           AWS_REGION: ${{ secrets.AWS_REGION }}  
@@ -45,10 +43,18 @@ jobs:
 
       - name: Update ECS service
         run: |
-          aws ecs update-service `
-            --cluster ${{ secrets.ECS_CLUSTER }} `
-            --service ${{ secrets.ECS_SERVICE }} `
-            --force-new-deployment `
+          if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
+            CLUSTER=${{ secrets.AWS_PROD_CLUSTER }}
+            SERVICE=${{ secrets.AWS_PROD_SERVICE }}
+          else
+            CLUSTER=${{ secrets.AWS_STAGE_CLUSTER }}
+            SERVICE=${{ secrets.AWS_STAGE_SERVICE }}
+          fi
+
+          aws ecs update-service \
+            --cluster $CLUSTER \
+            --service $SERVICE \
+            --force-new-deployment \
             --region ${{ secrets.AWS_REGION }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
