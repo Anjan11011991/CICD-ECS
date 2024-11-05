@@ -44,18 +44,18 @@ jobs:
       - name: Update ECS service
         run: |
           if (${{ github.event.inputs.environment }} -eq "prod") {
-              $CLUSTER = ${{ secrets.AWS_PROD_CLUSTER }}
-              $SERVICE = ${{ secrets.AWS_PROD_SERVICE }}
+              $CLUSTER = "${{ secrets.AWS_PROD_CLUSTER }}"
+              $SERVICE = "${{ secrets.AWS_PROD_SERVICE }}"
           } else {
-              $CLUSTER = ${{ secrets.AWS_STAGE_CLUSTER }}
-              $SERVICE = ${{ secrets.AWS_STAGE_SERVICE }}
+              $CLUSTER = "${{ secrets.AWS_STAGE_CLUSTER }}"
+              $SERVICE = "${{ secrets.AWS_STAGE_SERVICE }}"
           }
 
           aws ecs update-service `
               --cluster $CLUSTER `
               --service $SERVICE `
               --force-new-deployment `
-              --region ${{ secrets.AWS_REGION }}
+              --region "${{ secrets.AWS_REGION }}"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
