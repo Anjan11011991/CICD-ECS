@@ -42,8 +42,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Update ECS service
-        shell: pwsh  # Specify PowerShell shell
+        shell: pwsh  # Specify PowerShell
         run: |
+          # Determine the cluster and service based on the input environment
           if (${{ github.event.inputs.environment }} -eq "prod") {
               $CLUSTER = "${{ secrets.AWS_PROD_CLUSTER }}"
               $SERVICE = "${{ secrets.AWS_PROD_SERVICE }}"
@@ -56,6 +57,7 @@ jobs:
           Write-Host "Using cluster: $CLUSTER"
           Write-Host "Using service: $SERVICE"
 
+          # Update the ECS service
           aws ecs update-service `
               --cluster $CLUSTER `
               --service $SERVICE `
