@@ -33,8 +33,8 @@ jobs:
 
       - name: Tag and Push Docker image to Amazon ECR
         run: |
-         docker tag hello-world-python:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
-         docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
+          docker tag hello-world-python:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/hello-world-python:latest
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}  
           AWS_REGION: ${{ secrets.AWS_REGION }}  
@@ -43,13 +43,13 @@ jobs:
 
       - name: Update ECS service
         run: |
-          if [ "${{ github.event.inputs.environment }}" == "prod" ]; then
-            CLUSTER=${{ secrets.AWS_PROD_CLUSTER }}
-            SERVICE=${{ secrets.AWS_PROD_SERVICE }}
-          else
-            CLUSTER=${{ secrets.AWS_STAGE_CLUSTER }}
-            SERVICE=${{ secrets.AWS_STAGE_SERVICE }}
-          fi
+          if (${{ github.event.inputs.environment }} -eq "prod") {
+            $CLUSTER = "${{ secrets.AWS_PROD_CLUSTER }}"
+            $SERVICE = "${{ secrets.AWS_PROD_SERVICE }}"
+          } else {
+            $CLUSTER = "${{ secrets.AWS_STAGE_CLUSTER }}"
+            $SERVICE = "${{ secrets.AWS_STAGE_SERVICE }}"
+          }
 
           aws ecs update-service `
             --cluster $CLUSTER `
